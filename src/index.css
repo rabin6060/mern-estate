@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .menu-items{
+        @apply hidden sm:inline hover:underline;
+    }
+}
