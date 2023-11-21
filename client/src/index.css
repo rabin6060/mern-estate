@@ -6,4 +6,10 @@
     .menu-items{
         @apply hidden sm:inline hover:underline;
     }
+    .signup-inputs{
+        @apply p-3 border rounded-lg
+    }
 }
+ body{
+    background-color: rgb(241, 245, 241);
+ }
