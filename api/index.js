@@ -1,6 +1,8 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import userRoute from './routes/user.route.js'
+import authRoute from './routes/auth.routes.js'
+import cors from 'cors'
 import dotenv from 'dotenv'
 dotenv.config();
 
@@ -17,9 +19,12 @@ const connect = async() => {
 
 const app = express()  
 
+app.use(express.json())
+
 app.listen(3000,()=>{
     console.log(`server running on the port ${process.env.PORT}`)
     connect()
 })
 
 app.use('/api/user',userRoute)
+app.use('/api/auth',authRoute)
