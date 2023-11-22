@@ -2,9 +2,7 @@ import { errorHandler } from "../utils/error.js"
 import bcrypt from 'bcryptjs'
 import User from '../models/user.modal.js'
 
-export const test = (req,res) => {
-    res.send('test is working..')
-}
+
 
 export const updateUser =async (req,res,next)=>{
     if(req.user.id!==req.params.id) return next(errorHandler(402,"unauthorized."))
@@ -22,6 +20,16 @@ export const updateUser =async (req,res,next)=>{
             const {password,...rest} = updateUserInfo._doc
             res.status(200).json(rest)
         
+    } catch (error) {
+        next(error)
+    }
+}
+export const deleteUser =async(req,res,next)=>{
+    if(req.user.id!==req.params.id) return next(errorHandler(401,"you can delete your own account."))
+    try {
+        await User.findByIdAndDelete(req.params.id)
+        res.clearCookie("access_token")
+        res.status(200).json("user deleted successfully")
     } catch (error) {
         next(error)
     }
