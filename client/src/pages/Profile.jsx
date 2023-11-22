@@ -1,16 +1,44 @@
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import { useEffect, useRef, useState } from 'react'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import {app} from '../firebase'
+import { updateUserFailure, updateUserStart, updateUserSuccess} from '../redux/user/userSlice'
 
 const Profile = () => {
-  const {currentUser} = useSelector(state=>state.user)
+  const {currentUser,loading,error} = useSelector(state=>state.user)
   const fileRef = useRef(null)
   const [file, setFile] = useState(undefined)
   const [filePerc, setFilePerc] = useState(0)
-  const [error, setError] = useState(null)
+  const [errors, setError] = useState(null)
   const [formData,setFormData] = useState({})
-  
+  const [updateSuccess,setUpdateSuccess] = useState(false)
+  const dispatch = useDispatch()
+
+  const handleChange = (e) => {
+    setFormData({...formData,[e.target.id]:e.target.value})
+  }
+  const handleUpdate = async (e)=>{
+    e.preventDefault()
+    try {
+      dispatch(updateUserStart())
+      const res =await fetch(`/api/user/update/${currentUser._id}`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(formData)
+      })
+      const data = await res.json()
+      if (data.success == false) {
+        dispatch(updateUserFailure(data.message))
+        return
+      }
+      dispatch(updateUserSuccess(data))
+      setUpdateSuccess(true)
+    } catch (error) {
+      dispatch(updateUserFailure(error.message))
+    }
+  }
   useEffect(() => {
     if(file){
       handleFileUpload(file)
@@ -46,25 +74,31 @@ const Profile = () => {
   return (
     <div className='p-2 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form className='flex flex-col gap-4'>
+      <form className='flex flex-col gap-4' onSubmit={handleUpdate}>
         <input onChange={(e)=>setFile(e.target.files[0])} type="file" ref={fileRef} hidden accept='image/*' />
         <img onClick={()=>fileRef.current.click()} className='rounded-full w-24 h-24 object-cover cursor-pointer self-center mt-2 ' src={formData.avatar || currentUser.avatar} alt="profile" />
         <p className='text-sm self-center'>
           {
-            error ? <span className='text-red-700'>image upload error (image should be less than 2mb.)</span>:
+            errors ? <span className='text-red-700'>image upload error (image should be less than 2mb.)</span>:
             filePerc>0 && filePerc <100 ? <span className='text-slate-700'>{`Uploading ${filePerc}% ` }</span> :
             filePerc === 100 ? <span className='text-green-700'>uploaded successfully</span>:""
           }
         </p>
-        <input className='p-3 border rounded-lg ' type="text" placeholder='username' id='username' />
-        <input className='p-3 border rounded-lg ' type="email" placeholder='email' id='email' />
-        <input className='p-3 border rounded-lg ' type="text" placeholder='password' id='password' />
-        <button className='buttons'>update</button>
+        <input className='p-3 border rounded-lg ' onChange={handleChange} defaultValue={currentUser.username} type="text" placeholder='username' id='username' />
+        <input className='p-3 border rounded-lg ' onChange={handleChange} defaultValue={currentUser.email} type="email" placeholder='email' id='email' />
+        <input className='p-3 border rounded-lg ' onChange={handleChange}  type="text" placeholder='password' id='password' />
+        <button disabled={loading} className='buttons'>
+          {
+            loading ? "loading...":"update"
+          }
+        </button>
       </form>
       <div className='flex justify-between mt-3'>
         <span className='text-red-700 cursor-pointer'>Delete Account</span>
         <span className='text-red-700 cursor-pointer'>Sign Out</span>
       </div>
+      <p className='text-red-700 mt-5'>{error?error:''}</p>
+      <p className='text-green-700 mt-5'>{updateSuccess?"updated successfully!!":''}</p>
     </div>
   )
 }
