@@ -2,7 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import userRoute from './routes/user.route.js'
 import authRoute from './routes/auth.routes.js'
-import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 dotenv.config();
 
@@ -20,6 +20,7 @@ const connect = async() => {
 const app = express()  
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.listen(3000,()=>{
     console.log(`server running on the port ${process.env.PORT}`)
