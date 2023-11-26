@@ -6,7 +6,18 @@ import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/st
 const Listing = () => {
     const [files,setFiles] = useState([])
     const [formData,setFormData] = useState({
-        imageUrls:[]
+        imageUrls:[],
+        name:'',
+        description:'',
+        address:'',
+        type:"rent",
+        regularPrice:50,
+        discountedPrice:50,
+        bedrooms:1,
+        bathrooms:1,
+        offer:false,
+        furnished:false,
+        parking:false
     })
     const [imageUploadError,setImageUploadError] = useState(false)
     const [upload,setUpload] = useState(false)
@@ -61,18 +72,18 @@ const Listing = () => {
             ...formData,imageUrls:formData.imageUrls.filter((url)=>url!==img)
         })
     }
-
+    const handleChange = ()=>{}
   return (
     <main className='p-3 max-w-4xl mx-auto '>
         <h1 className='text-3xl font-semibold text-center my-7'>Create a Listing</h1>
         <form className='flex flex-col sm:flex-row gap-3'>
             <div className='flex flex-col gap-4 flex-1 '>
-                <input type="text" placeholder='name' id="name" className='border p-3 rounded-lg' minLength='10'maxLength={'62'} required />
-                <textarea type="text" placeholder='description' id="description" className='border p-3 rounded-lg' minLength='10'maxLength={'62'} required />
-                <input type="text" placeholder='address' id="address" className='border p-3 rounded-lg' minLength='10'maxLength={'62'} required />
+                <input type="text" placeholder='name' id="name" className='border p-3 rounded-lg' minLength='10'maxLength={'62'} required onChange={handleChange} value={formData.name}/>
+                <textarea type="text" placeholder='description' id="description" className='border p-3 rounded-lg' minLength='10'maxLength={'62'} required onChange={handleChange} value={formData.description} />
+                <input type="text" placeholder='address' id="address" className='border p-3 rounded-lg' minLength='10'maxLength={'62'} required onChange={handleChange} value={formData.address} />
                 <div className='flex gap-6 flex-wrap'>
                     <div className='flex gap-2'>
-                        <input type="checkbox" id='sale' className='w-5' />
+                        <input type="checkbox" id='sale' className='w-5' onChange={handleChange} checked={formData.type=="sale"} />
                         <span>Sell</span>
                     </div>
                     <div className='flex gap-2'>
