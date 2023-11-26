@@ -10,7 +10,7 @@
         @apply p-3 border rounded-lg
     }
     .buttons {
-        @apply bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95
+        @apply bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70
     }
 }
  body{
