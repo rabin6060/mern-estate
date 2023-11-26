@@ -6,7 +6,7 @@ import Signup from './pages/Signup'
 import About from './pages/About'
 import Header from './components/Header'
 import PrivateRoute from './components/PrivateRoute'
-import Listing from './pages/Listing'
+import Listing from './pages/CreateListing'
 
 export default function App() {
   return (
