@@ -13,6 +13,8 @@ const Profile = () => {
   const [errors, setError] = useState(null)
   const [formData,setFormData] = useState({})
   const [updateSuccess,setUpdateSuccess] = useState(false)
+  const [showListingError,setShowListingError] = useState(false)
+  const [userListings,setUserListings] = useState([])
   const dispatch = useDispatch()
 
   const handleChange = (e) => {
@@ -101,7 +103,19 @@ const Profile = () => {
       dispatch(SignOutUserFailure(error.message))
     }
   }
-  
+  const handleShowListings = async() =>{
+    try {
+      setShowListingError(false)
+      const response = await fetch(`/api/user/listings/${currentUser._id}`)
+      const data  =await response.json()
+      if (data.success===false) {
+        setShowListingError(true)
+      }
+      setUserListings(data)
+    } catch (error) {
+      setShowListingError(true)
+    }
+  }
   return (
     <div className='p-2 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -133,6 +147,29 @@ const Profile = () => {
       </div>
       <p className='text-red-700 mt-5'>{error?error:''}</p>
       <p className='text-green-700 mt-5'>{updateSuccess?"updated successfully!!":''}</p>
+      <button onClick={handleShowListings} className='text-green-700 w-full'>Show Listing</button>
+      {showListingError ? <p className='text-red-700 mt-5 text-center'>"error while showing listing"</p> :''}
+      {
+        userListings && userListings.length>0 &&
+        <div className='flex flex-col gap-4 mt-5'>
+          <h1 className='text-center text-4xl font-semibold '>User Listing</h1>
+       { userListings.map(listing=>(
+          <div key={listing._id} className='border rounded-lg flex gap-5 items-center justify-between p-2'>
+            <Link to={`/listing/${listing._id}`}>
+              <img src={listing.imageUrl[0]} alt="photo" className='w-16 h-16 object-contain'/>
+            </Link>
+            <Link to={`/listing/${listing._id}`} className='text-slate-700 font-semibold flex-1 hover:underline truncate'>
+              <p >{listing.name}</p>
+            </Link>
+            <div className='flex flex-col items-center'>
+              <button className='text-red-700 uppercase'>Delete</button>
+              <button className='text-green-700 uppercase'>Edit</button>
+            </div>
+          </div>
+        ))}
+        </div>
+       
+      }
     </div>
   )
 }
