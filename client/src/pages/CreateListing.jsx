@@ -105,7 +105,7 @@ const Listing = () => {
                 headers:{
                     "Content-Type":"application/json"
                 },
-                body:JSON.stringify({...formData,useRef:currentUser._id})
+                body:JSON.stringify({...formData,userRef:currentUser._id})
             })
             const data = await res.json()
             if(data.success=='false') return setError("listing failed.")
