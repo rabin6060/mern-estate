@@ -49,7 +49,7 @@ const listingSchema =new mongoose.Schema({
         type:Array,
         required:true
     },
-    useRef:{
+    userRef:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
         required:true
@@ -58,4 +58,4 @@ const listingSchema =new mongoose.Schema({
 
 },{timestamps:true})
 
-export const listingModel = mongoose.model('Listing',listingSchema)
+export const Listing = mongoose.model('Listing',listingSchema)
