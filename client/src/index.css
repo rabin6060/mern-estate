@@ -16,3 +16,6 @@
  body{
     background-color: rgb(241, 245, 241);
  }
+ label{
+    font-weight: 600;
+ }
