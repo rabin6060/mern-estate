@@ -160,7 +160,7 @@ export default function Search() {
         </div>
         <div className="p-7 flex-1">
             <h1 className='text-3xl font-semibold text-slate-500 mt-2'>Listing Result</h1>
-            <div className='flex flex-col p-7'>
+            <div className='flex flex-col sm:flex-row gap-5 p-7'>
                 {loading && 
                     <p className='text-center text-xl '>Loading.....</p>
                 }
