@@ -124,7 +124,7 @@ const Listing = () => {
         <form className='flex flex-col sm:flex-row gap-3' onSubmit={handleSubmit}>
             <div className='flex flex-col gap-4 flex-1 '>
                 <input type="text" placeholder='name' id="name" className='border p-3 rounded-lg' minLength='5'maxLength={'62'} required onChange={handleChange} value={formData.name}/>
-                <textarea type="text" placeholder='description' id="description" className='border p-3 rounded-lg' minLength='5'maxLength={'62'} required onChange={handleChange} value={formData.description} />
+                <textarea type="text" placeholder='description' id="description" className='border p-3 rounded-lg' minLength='5' maxLength={'362'} required onChange={handleChange} value={formData.description} />
                 <input type="text" placeholder='address' id="address" className='border p-3 rounded-lg' minLength='5'maxLength={'62'} required onChange={handleChange} value={formData.address} />
                 <div className='flex gap-6 flex-wrap'>
                     <div className='flex gap-2'>
