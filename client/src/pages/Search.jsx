@@ -15,6 +15,7 @@ export default function Search() {
     })
     const [loading,setLoading] = useState(false)
     const [listings,setListings] = useState([])
+    const [showMore,setShowMore]= useState(false)
 
     const navigate = useNavigate()
     const handleChange = (e) =>{
@@ -76,6 +77,11 @@ export default function Search() {
                         setLoading(false)
                         return
                     }
+                    if(data.length>8){
+                        setShowMore(true)
+                    }else{
+                        setShowMore(false)
+                    }
                     setLoading(false)
                     setListings(data)
                     
@@ -102,6 +108,20 @@ export default function Search() {
         navigate(`/search?${searchQuery}`)
     }
 
+    const handleMoreImage =async ()=>{
+        const listingLength = listings.length
+        const startIndex = listingLength
+        const urlParams = new URLSearchParams(location.search)
+        urlParams.set('startIndex',startIndex)
+        const searchQuery = urlParams.toString()
+        const res = await fetch(`api/listing/get?${searchQuery}`)
+        const data = await res.json()
+        if (data.length<9) {
+            setShowMore(false)
+        }
+        setListings([...listings,...data])
+
+    }
   return (
     <div className='flex flex-col md:flex-row'>
         <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen">
@@ -160,7 +180,7 @@ export default function Search() {
         </div>
         <div className="p-7 flex-1">
             <h1 className='text-3xl font-semibold text-slate-500 mt-2'>Listing Result</h1>
-            <div className='flex flex-col sm:flex-row gap-5 p-7'>
+            <div className='flex flex-col flex-wrap sm:flex-row gap-5 p-7'>
                 {loading && 
                     <p className='text-center text-xl '>Loading.....</p>
                 }
@@ -171,6 +191,10 @@ export default function Search() {
                 {
                     listings?.length>0 &&
                     listings.map(listing=><ListingCard key={listing._id} listing={listing}/>)
+                }
+                {
+                    showMore&&
+                    <button onClick={handleMoreImage} className='w-full text-left text-green-500 text-lg font-bold'>Show More..</button>
                 }
             </div>
         </div>
