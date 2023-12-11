@@ -1,6 +1,7 @@
 import React, { useState ,useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 import {Swiper,SwiperSlide} from 'swiper/react'
+import { useSelector } from 'react-redux'
 import {Navigation} from 'swiper/modules'
 import 'swiper/css/bundle'
 import {
@@ -10,13 +11,15 @@ import {
     FaMapMarkerAlt,
     FaParking,
   } from 'react-icons/fa';
+import Contact from '../components/Contact'
 
 
 export default function Listing() {
-   
+    const {currentUser} = useSelector(state=>state.user)
     const [listing,setListing] = useState(null)
     const [loading,setLoading] = useState(false)
     const [error,setError] = useState(false)
+    const [contact,setContact] = useState(false)
     const params = useParams()
     useEffect(()=>{
         async function fetchData() {
@@ -65,8 +68,8 @@ export default function Listing() {
             <p className='text-2xl font-semibold'>
               {listing.name} - ${' '}
               {listing.offer
-                ? listing.discountPrice.toLocaleString('en-US')
-                : listing.regularPrice.toLocaleString('en-US')}
+                ? listing.discountPrice?.toLocaleString('en-US')
+                : listing.regularPrice?.toLocaleString('en-US')}
               {listing.type === 'rent' && ' / month'}
             </p>
             <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
@@ -109,6 +112,12 @@ export default function Listing() {
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
               </li>
             </ul>
+            {
+              currentUser &&  listing.userRef !== currentUser._id && !contact &&
+              <button onClick={()=>setContact(!contact)} className='bg-slate-700 text-white px-4 py-2 rounded-lg text-lg hover:opacity-95 uppercase'>Contact LandLord</button>
+            }
+            {contact && <Contact listing={listing}/>}
+
           </div>
             </div>
         }
