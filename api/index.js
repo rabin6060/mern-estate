@@ -5,6 +5,7 @@ import authRoute from './routes/auth.routes.js'
 import listingRoute from './routes/listing.routes.js'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
+import path from 'path'
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ const connect = async() => {
   });
 }
 
-
+const __dirname = path.resolve()
 const app = express()  
 
 app.use(express.json())
@@ -32,6 +33,11 @@ app.listen(3000,()=>{
 app.use('/api/user',userRoute)
 app.use('/api/auth',authRoute)
 app.use('/api/listing',listingRoute)
+
+app.use(express.static(path.join(__dirname,'/client/dist')))
+app.get('*',(req,res)=>{
+  res.sendFile(path.join(__dirname,'client','dist','index.html'))
+})
 
 app.use((err,req,res,next)=>{
   const statusCode = err.statusCode || 500
